@@ -76,6 +76,26 @@
             gap: 8px;
         }
 
+        /* API Key Input Styling */
+        .api-box {
+            margin-bottom: 20px;
+        }
+
+        .api-box input {
+            width: 100%;
+            background: #0f0f15;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .api-box input:focus {
+            border-color: var(--accent-glow);
+        }
+
         /* Upload Area */
         .upload-box {
             border: 2px dashed var(--border-color);
@@ -175,10 +195,6 @@
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
         }
 
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-
         /* Status & Output */
         .result-box {
             margin-top: 25px;
@@ -201,21 +217,22 @@
             color: #e5e7eb;
             white-space: pre-wrap;
         }
-
-        @media (max-width: 480px) {
-            header h1 { font-size: 1.8rem; }
-            .container { padding: 18px; }
-        }
     </style>
 </head>
 <body>
 
     <header>
         <h1>عزام تاج السر استايل</h1>
-        <p>استوديو الذكاء الاصطناعي لمعالجة الصور وتفيذ الأوامر</p>
+        <p>استوديو الذكاء الاصطناعي لمعالجة الصور وتنفيذ الأوامر</p>
     </header>
 
     <div class="container">
+        <!-- إدخال مفتاح الـ API (اختياري للربط الحقيقي) -->
+        <div class="api-box">
+            <div class="section-title" style="font-size: 0.9rem;">🔑 مفتاح الـ API الخاص بك (OpenRouter / Gemini)</div>
+            <input type="password" id="apiKeyInput" placeholder="الصق مفتاح الـ API هنا للتشغيل الفعلي...">
+        </div>
+
         <!-- 1. رفع الصورة -->
         <div class="section-title">
             <span>📷</span> رفع الصورة من هاتفك
@@ -234,7 +251,7 @@
             <div class="section-title">
                 <span>✨</span> اكتب عايز الذكاء الاصطناعي يعمل شنو بالصورة
             </div>
-            <textarea id="promptInput" placeholder="مثال: أوصف الصورة دي بالتفصيل، أو عدل الإضاءة وخليها دافئة، أو حول الصورة لـ أنمي..."></textarea>
+            <textarea id="promptInput" placeholder="مثال: أوصف الصورة دي بالتفصيل، أو استخرج النص الموجود فيها..."></textarea>
         </div>
 
         <!-- زر التنفيذ -->
@@ -248,31 +265,35 @@
     </div>
 
     <script>
-        // معاينة الصورة فور اختيارها
+        let base64Image = "";
+
+        // معاينة الصورة وتحويلها إلى Base64
         function previewImage(event) {
             const input = event.target;
             const preview = document.getElementById('imagePreview');
             const placeholder = document.getElementById('uploadPlaceholder');
 
             if (input.files && input.files[0]) {
+                const file = input.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
                     placeholder.style.display = 'none';
+                    base64Image = e.target.result; // تخزين الصورة بصيغة Base64
                 }
-                reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(file);
             }
         }
 
-        // محاكاة زر تشغيل الذكاء الاصطناعي
-        function processAI() {
-            const imageInput = document.getElementById('imageInput');
+        // دالة تشغيل الذكاء الاصطناعي الحقيقية عبر OpenRouter / Gemini API
+        async function processAI() {
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
             const promptInput = document.getElementById('promptInput').value.trim();
             const resultBox = document.getElementById('resultBox');
             const resultText = document.getElementById('resultText');
 
-            if (!imageInput.files || !imageInput.files[0]) {
+            if (!base64Image) {
                 alert('يرجى اختيار صورة من جهازك أولاً!');
                 return;
             }
@@ -283,12 +304,60 @@
             }
 
             resultBox.style.display = 'block';
-            resultText.innerText = '⏳ جاري تحليل الصورة وتنفيذ الطلب عبر الذكاء الاصطناعي...';
 
-            // هنا يتم الربط مع API الخاص بالذكاء الاصطناعي
-            setTimeout(() => {
-                resultText.innerText = `تم استلام الطلب بنجاح!\n\nالطلب: "${promptInput}"\n\n(جاهز للربط الفعلي مع Gemini Vision API أو أي خادم backend من اختيارك).`;
-            }, 1500);
+            if (!apiKey) {
+                // وضع المحاكاة في حال لم يتم إدخال مفتاح حقيقي
+                resultText.innerText = '⏳ (وضع المحاكاة لأنك لم تضف مفتاح API حقيقي):\n\nلقد طلبت: "' + promptInput + '"\nالرجاء إدخال مفتاح API حقيقي وسليم في الخانة بالأعلى لكي يتم إرسال الصورة ومعالجتها عبر الخادم الفعلي.';
+                return;
+            }
+
+            resultText.innerText = '⏳ جاري إرسال الصورة والطلب للذكاء الاصطناعي عبر الشبكة...';
+
+            try {
+                // إرسال الطلب الفعلي إلى OpenRouter API (مثال يدعم النماذج البصرية مثل Gemini Flash أو Claude)
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${apiKey}`,
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": window.location.href,
+                        "X-Title": "Azzam Studio"
+                    },
+                    body: JSON.stringify({
+                        "model": "google/gemini-2.5-flash", // نموذج يدعم الصور والسرعة
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": promptInput
+                                    },
+                                    {
+                                        "type": "image_url",
+                                        "image_url": {
+                                            "url": base64Image
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.choices && data.choices.length > 0) {
+                    resultText.innerText = data.choices[0].message.content;
+                } else if (data.error) {
+                    resultText.innerText = '❌ خطأ من الخادم: ' + (data.error.message || JSON.stringify(data.error));
+                } else {
+                    resultText.innerText = '⚠️ استجابة غير متوقعة من السيرفر: ' + JSON.stringify(data);
+                }
+
+            } catch (error) {
+                resultText.innerText = '❌ حدث خطأ في الاتصال بالشبكة: ' + error.message;
+            }
         }
     </script>
 </body>
