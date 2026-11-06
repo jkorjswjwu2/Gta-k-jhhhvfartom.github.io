@@ -1,286 +1,295 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPIRO X - Educational Demo</title>
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Courier New', monospace;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عزام تاج السر استايل - استوديو الذكاء الاصطناعي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0b0e;
+            --card-bg: #16161e;
+            --accent-glow: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #2e2e3e;
+        }
 
-  body {
-    background: #000;
-    color: #00aaff;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px;
-    overflow-x: hidden;
-  }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
 
-  .title {
-    font-size: 2.8rem;
-    font-weight: bold;
-    letter-spacing: 3px;
-    text-align: center;
-    margin-bottom: 40px;
-    background: linear-gradient(
-      90deg,
-      #00aaff, #00ffcc, #aa00ff, #ff00aa, #00aaff
-    );
-    background-size: 400% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: rgbFlow 4s linear infinite;
-    text-shadow: 0 0 30px rgba(0, 170, 255, 0.5);
-  }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
 
-  @keyframes rgbFlow {
-    0%   { background-position: 0% 50%; }
-    100% { background-position: 400% 50%; }
-  }
+        header {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
 
-  .input-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 25px rgba(99, 102, 241, 0.3);
+            letter-spacing: -0.5px;
+        }
 
-  .bracket {
-    font-size: 2.5rem;
-    color: #00aaff;
-    text-shadow: 0 0 15px #00aaff;
-    font-weight: bold;
-  }
+        header p {
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
 
-  .country-select {
-    background: #001122;
-    color: #00aaff;
-    border: 2px solid #00aaff;
-    border-radius: 8px;
-    padding: 10px 15px;
-    font-size: 1rem;
-    font-family: inherit;
-    cursor: pointer;
-    outline: none;
-    box-shadow: 0 0 10px rgba(0, 170, 255, 0.4);
-    transition: 0.3s;
-  }
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6),
+                        0 0 30px rgba(99, 102, 241, 0.1);
+        }
 
-  .country-select:hover,
-  .country-select:focus {
-    box-shadow: 0 0 20px rgba(0, 170, 255, 0.8);
-  }
+        .section-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #d1d5db;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-  .phone-input {
-    background: #001122;
-    color: #00aaff;
-    border: 2px solid #00aaff;
-    border-radius: 8px;
-    padding: 10px 15px;
-    font-size: 1rem;
-    font-family: inherit;
-    outline: none;
-    width: 220px;
-    box-shadow: 0 0 10px rgba(0, 170, 255, 0.4);
-    transition: 0.3s;
-  }
+        /* Upload Area */
+        .upload-box {
+            border: 2px dashed var(--border-color);
+            border-radius: 14px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
 
-  .phone-input::placeholder {
-    color: rgba(0, 170, 255, 0.5);
-  }
+        .upload-box:hover, .upload-box.dragover {
+            border-color: var(--accent-glow);
+            background: rgba(99, 102, 241, 0.05);
+        }
 
-  .phone-input:focus {
-    box-shadow: 0 0 20px rgba(0, 170, 255, 0.8);
-  }
+        .upload-box input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
 
-  .send-btn {
-    background: #001122;
-    color: #00aaff;
-    border: 2px solid #00aaff;
-    border-radius: 8px;
-    padding: 12px 45px;
-    font-size: 1.1rem;
-    font-family: inherit;
-    font-weight: bold;
-    cursor: pointer;
-    letter-spacing: 2px;
-    box-shadow: 0 0 15px rgba(0, 170, 255, 0.5);
-    transition: 0.3s;
-    margin-bottom: 30px;
-  }
+        .upload-icon {
+            font-size: 40px;
+            color: var(--accent-glow);
+            margin-bottom: 10px;
+        }
 
-  .send-btn:hover:not(:disabled) {
-    background: #00aaff;
-    color: #000;
-    box-shadow: 0 0 30px rgba(0, 170, 255, 0.9);
-  }
+        .upload-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
 
-  .send-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+        .preview-img {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 10px;
+            display: none;
+            margin: 0 auto;
+            object-fit: contain;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
 
-  .console {
-    width: 100%;
-    max-width: 700px;
-    height: 350px;
-    background: #000811;
-    border: 2px solid #00aaff;
-    border-radius: 10px;
-    padding: 15px;
-    overflow-y: auto;
-    font-size: 0.9rem;
-    box-shadow: 0 0 20px rgba(0, 170, 255, 0.4);
-    display: none;
-  }
+        /* Textarea Input */
+        .input-group {
+            margin-top: 25px;
+        }
 
-  .console.visible {
-    display: block;
-  }
+        textarea {
+            width: 100%;
+            height: 110px;
+            background: #0f0f15;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s;
+        }
 
-  .console-line {
-    margin-bottom: 5px;
-    color: #00ffaa;
-    text-shadow: 0 0 8px rgba(0, 255, 170, 0.6);
-    animation: fadeIn 0.2s ease;
-  }
+        textarea:focus {
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+        }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateX(10px); }
-    to   { opacity: 1; transform: translateX(0); }
-  }
+        textarea::placeholder {
+            color: #6b7280;
+        }
 
-  .console-line.final {
-    color: #ffaa00;
-    font-weight: bold;
-    text-shadow: 0 0 15px rgba(255, 170, 0, 0.9);
-    font-size: 1rem;
-    margin-top: 10px;
-  }
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-hover));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
 
-  .console::-webkit-scrollbar {
-    width: 8px;
-  }
-  .console::-webkit-scrollbar-track {
-    background: #000;
-  }
-  .console::-webkit-scrollbar-thumb {
-    background: #00aaff;
-    border-radius: 4px;
-  }
-</style>
+        .btn-submit:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Status & Output */
+        .result-box {
+            margin-top: 25px;
+            padding: 15px;
+            background: #0f0f15;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .result-box h3 {
+            font-size: 1rem;
+            color: var(--accent-glow);
+            margin-bottom: 8px;
+        }
+
+        .result-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #e5e7eb;
+            white-space: pre-wrap;
+        }
+
+        @media (max-width: 480px) {
+            header h1 { font-size: 1.8rem; }
+            .container { padding: 18px; }
+        }
+    </style>
 </head>
 <body>
 
-  <h1 class="title">WELCOME TO SPIRO X</h1>
+    <header>
+        <h1>عزام تاج السر استايل</h1>
+        <p>استوديو الذكاء الاصطناعي لمعالجة الصور وتفيذ الأوامر</p>
+    </header>
 
-  <div class="input-container">
-    <span class="bracket">(</span>
+    <div class="container">
+        <!-- 1. رفع الصورة -->
+        <div class="section-title">
+            <span>📷</span> رفع الصورة من هاتفك
+        </div>
+        <div class="upload-box" id="uploadBox">
+            <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)">
+            <div id="uploadPlaceholder">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">اضغط هنا أو اسحب الصورة لترفعها</div>
+            </div>
+            <img id="imagePreview" class="preview-img" alt="معاينة الصورة">
+        </div>
 
-    <select class="country-select" id="countrySelect">
-      <option value="+966">🇸🇦 السعودية +966</option>
-      <option value="+971">🇦🇪 الإمارات +971</option>
-      <option value="+20">🇪🇬 مصر +20</option>
-      <option value="+964">🇮🇶 العراق +964</option>
-      <option value="+962">🇯🇴 الأردن +962</option>
-      <option value="+965">🇰🇼 الكويت +965</option>
-      <option value="+974">🇶🇦 قطر +974</option>
-      <option value="+973">🇧🇭 البحرين +973</option>
-      <option value="+968">🇴🇲 عمان +968</option>
-      <option value="+967">🇾🇪 اليمن +967</option>
-      <option value="+212">🇲🇦 المغرب +212</option>
-      <option value="+213">🇩🇿 الجزائر +213</option>
-      <option value="+216">🇹🇳 تونس +216</option>
-      <option value="+218">🇱🇾 ليبيا +218</option>
-      <option value="+249">🇸🇩 السودان +249</option>
-      <option value="+1">🇺🇸 أمريكا +1</option>
-      <option value="+44">🇬🇧 بريطانيا +44</option>
-      <option value="+49">🇩🇪 ألمانيا +49</option>
-      <option value="+33">🇫🇷 فرنسا +33</option>
-      <option value="+90">🇹🇷 تركيا +90</option>
-    </select>
+        <!-- 2. كتابة التعليمات -->
+        <div class="input-group">
+            <div class="section-title">
+                <span>✨</span> اكتب عايز الذكاء الاصطناعي يعمل شنو بالصورة
+            </div>
+            <textarea id="promptInput" placeholder="مثال: أوصف الصورة دي بالتفصيل، أو عدل الإضاءة وخليها دافئة، أو حول الصورة لـ أنمي..."></textarea>
+        </div>
 
-    <input
-      type="tel"
-      class="phone-input"
-      id="phoneInput"
-      placeholder="أدخل رقم الهاتف"
-      maxlength="15"
-    />
+        <!-- زر التنفيذ -->
+        <button class="btn-submit" onclick="processAI()">تشغيل الذكاء الاصطناعي 🚀</button>
 
-    <span class="bracket">)</span>
-  </div>
+        <!-- منطقة النتيجة -->
+        <div class="result-box" id="resultBox">
+            <h3>النتيجة:</h3>
+            <div class="result-content" id="resultText">جاري المعالجة...</div>
+        </div>
+    </div>
 
-  <button class="send-btn" id="sendBtn">إرسال</button>
+    <script>
+        // معاينة الصورة فور اختيارها
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('imagePreview');
+            const placeholder = document.getElementById('uploadPlaceholder');
 
-  <div class="console" id="console"></div>
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
-<script>
-  const sendBtn     = document.getElementById('sendBtn');
-  const consoleBox  = document.getElementById('console');
-  const phoneInput  = document.getElementById('phoneInput');
-  const countrySel  = document.getElementById('countrySelect');
+        // محاكاة زر تشغيل الذكاء الاصطناعي
+        function processAI() {
+            const imageInput = document.getElementById('imageInput');
+            const promptInput = document.getElementById('promptInput').value.trim();
+            const resultBox = document.getElementById('resultBox');
+            const resultText = document.getElementById('resultText');
 
-  // دالة إضافة السطور إلى الشاشة
-  function addLine(text, isFinal = false) {
-    const div = document.createElement('div');
-    div.className = 'console-line' + (isFinal ? ' final' : '');
-    div.textContent = text;
-    consoleBox.appendChild(div);
-    consoleBox.scrollTop = consoleBox.scrollHeight;
-  }
+            if (!imageInput.files || !imageInput.files[0]) {
+                alert('يرجى اختيار صورة من جهازك أولاً!');
+                return;
+            }
 
-  sendBtn.addEventListener('click', function () {
-    const phone = phoneInput.value.trim();
-    if (phone === '') {
-      alert('الرجاء إدخال رقم الهاتف أولاً');
-      return;
-    }
+            if (!promptInput) {
+                alert('يرجى كتابة المطلوب في خانة النص!');
+                return;
+            }
 
-    sendBtn.disabled = true;
-    sendBtn.textContent = 'جاري الإرسال...';
+            resultBox.style.display = 'block';
+            resultText.innerText = '⏳ جاري تحليل الصورة وتنفيذ الطلب عبر الذكاء الاصطناعي...';
 
-    consoleBox.classList.add('visible');
-    consoleBox.innerHTML = '';
-
-    const fullNumber = countrySel.value + phone;
-
-    addLine(`بدء العملية على الرقم: ${fullNumber}`);
-
-    let counter = 0;
-    const TOTAL = 100;
-
-    function sendOne() {
-      counter++;
-      addLine(`[${counter}/${TOTAL}] تم إرسال البلاغ ✔️`);
-
-      if (counter < TOTAL) {
-        setTimeout(sendOne, 150); // تم تسريع الوقت قليلاً لسرعة الاستجابة
-      } else {
-        setTimeout(() => {
-          addLine('═══════════════════════════');
-          addLine('تم إكمال العملية استمتع مع SPIRO X ☠️', true);
-          addLine('═══════════════════════════');
-
-          sendBtn.disabled = false;
-          sendBtn.textContent = 'إرسال';
-        }, 500);
-      }
-    }
-
-    setTimeout(sendOne, 500);
-  });
-</script>
-
+            // هنا يتم الربط مع API الخاص بالذكاء الاصطناعي
+            setTimeout(() => {
+                resultText.innerText = `تم استلام الطلب بنجاح!\n\nالطلب: "${promptInput}"\n\n(جاهز للربط الفعلي مع Gemini Vision API أو أي خادم backend من اختيارك).`;
+            }, 1500);
+        }
+    </script>
 </body>
 </html>
