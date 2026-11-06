@@ -76,7 +76,6 @@
             gap: 8px;
         }
 
-        /* API Key Input Styling */
         .api-box {
             margin-bottom: 20px;
         }
@@ -96,7 +95,6 @@
             border-color: var(--accent-glow);
         }
 
-        /* Upload Area */
         .upload-box {
             border: 2px dashed var(--border-color);
             border-radius: 14px;
@@ -109,7 +107,7 @@
             overflow: hidden;
         }
 
-        .upload-box:hover, .upload-box.dragover {
+        .upload-box:hover {
             border-color: var(--accent-glow);
             background: rgba(99, 102, 241, 0.05);
         }
@@ -145,7 +143,6 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        /* Textarea Input */
         .input-group {
             margin-top: 25px;
         }
@@ -169,11 +166,6 @@
             box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
         }
 
-        textarea::placeholder {
-            color: #6b7280;
-        }
-
-        /* Submit Button */
         .btn-submit {
             width: 100%;
             margin-top: 20px;
@@ -192,10 +184,8 @@
         .btn-submit:hover {
             opacity: 0.95;
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
         }
 
-        /* Status & Output */
         .result-box {
             margin-top: 25px;
             padding: 15px;
@@ -227,13 +217,11 @@
     </header>
 
     <div class="container">
-        <!-- إدخال مفتاح الـ API (اختياري للربط الحقيقي) -->
         <div class="api-box">
-            <div class="section-title" style="font-size: 0.9rem;">🔑 مفتاح الـ API الخاص بك (OpenRouter / Gemini)</div>
-            <input type="password" id="apiKeyInput" placeholder="الصق مفتاح الـ API هنا للتشغيل الفعلي...">
+            <div class="section-title" style="font-size: 0.9rem;">🔑 مفتاح الـ API الخاص بك</div>
+            <input type="password" id="apiKeyInput" placeholder="الصق مفتاح الـ API هنا...">
         </div>
 
-        <!-- 1. رفع الصورة -->
         <div class="section-title">
             <span>📷</span> رفع الصورة من هاتفك
         </div>
@@ -246,18 +234,15 @@
             <img id="imagePreview" class="preview-img" alt="معاينة الصورة">
         </div>
 
-        <!-- 2. كتابة التعليمات -->
         <div class="input-group">
             <div class="section-title">
                 <span>✨</span> اكتب عايز الذكاء الاصطناعي يعمل شنو بالصورة
             </div>
-            <textarea id="promptInput" placeholder="مثال: أوصف الصورة دي بالتفصيل، أو استخرج النص الموجود فيها..."></textarea>
+            <textarea id="promptInput" placeholder="مثال: اجعلها مرسدس..."></textarea>
         </div>
 
-        <!-- زر التنفيذ -->
         <button class="btn-submit" onclick="processAI()">تشغيل الذكاء الاصطناعي 🚀</button>
 
-        <!-- منطقة النتيجة -->
         <div class="result-box" id="resultBox">
             <h3>النتيجة:</h3>
             <div class="result-content" id="resultText">جاري المعالجة...</div>
@@ -267,54 +252,48 @@
     <script>
         let base64Image = "";
 
-        // معاينة الصورة وتحويلها إلى Base64
         function previewImage(event) {
             const input = event.target;
             const preview = document.getElementById('imagePreview');
             const placeholder = document.getElementById('uploadPlaceholder');
 
             if (input.files && input.files[0]) {
-                const file = input.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
                     placeholder.style.display = 'none';
-                    base64Image = e.target.result; // تخزين الصورة بصيغة Base64
+                    base64Image = e.target.result;
                 }
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // دالة تشغيل الذكاء الاصطناعي الحقيقية عبر OpenRouter / Gemini API
         async function processAI() {
             const apiKey = document.getElementById('apiKeyInput').value.trim();
             const promptInput = document.getElementById('promptInput').value.trim();
             const resultBox = document.getElementById('resultBox');
             const resultText = document.getElementById('resultText');
 
+            if (!apiKey) {
+                alert('الرجاء إدخال مفتاح الـ API في الخانة المخصصة!');
+                return;
+            }
+
             if (!base64Image) {
-                alert('يرجى اختيار صورة من جهازك أولاً!');
+                alert('يرجى اختيار صورة أولاً!');
                 return;
             }
 
             if (!promptInput) {
-                alert('يرجى كتابة المطلوب في خانة النص!');
+                alert('يرجى كتابة الطلب!');
                 return;
             }
 
             resultBox.style.display = 'block';
-
-            if (!apiKey) {
-                // وضع المحاكاة في حال لم يتم إدخال مفتاح حقيقي
-                resultText.innerText = '⏳ (وضع المحاكاة لأنك لم تضف مفتاح API حقيقي):\n\nلقد طلبت: "' + promptInput + '"\nالرجاء إدخال مفتاح API حقيقي وسليم في الخانة بالأعلى لكي يتم إرسال الصورة ومعالجتها عبر الخادم الفعلي.';
-                return;
-            }
-
-            resultText.innerText = '⏳ جاري إرسال الصورة والطلب للذكاء الاصطناعي عبر الشبكة...';
+            resultText.innerText = '⏳ جاري إرسال الصورة ومعالجتها عبر الذكاء الاصطناعي...';
 
             try {
-                // إرسال الطلب الفعلي إلى OpenRouter API (مثال يدعم النماذج البصرية مثل Gemini Flash أو Claude)
                 const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                     method: "POST",
                     headers: {
@@ -324,7 +303,8 @@
                         "X-Title": "Azzam Studio"
                     },
                     body: JSON.stringify({
-                        "model": "google/gemini-2.5-flash", // نموذج يدعم الصور والسرعة
+                        "model": "google/gemini-2.5-flash",
+                        "max_tokens": 1000, // تم ضبطه لقيمة منخفضة تتناسب مع الأرصدة المجانية لمنع الخطأ
                         "messages": [
                             {
                                 "role": "user",
@@ -352,11 +332,11 @@
                 } else if (data.error) {
                     resultText.innerText = '❌ خطأ من الخادم: ' + (data.error.message || JSON.stringify(data.error));
                 } else {
-                    resultText.innerText = '⚠️ استجابة غير متوقعة من السيرفر: ' + JSON.stringify(data);
+                    resultText.innerText = '⚠️ استجابة غير متوقعة: ' + JSON.stringify(data);
                 }
 
             } catch (error) {
-                resultText.innerText = '❌ حدث خطأ في الاتصال بالشبكة: ' + error.message;
+                resultText.innerText = '❌ خطأ في الاتصال: ' + error.message;
             }
         }
     </script>
