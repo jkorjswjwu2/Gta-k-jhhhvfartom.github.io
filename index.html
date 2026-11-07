@@ -2,116 +2,64 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ترحال السودان - TR7AL ALsudan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TR7AL ALsudan - ترحال السودان</title>
     
-    <!-- Leaflet CSS للخرائط -->
+    <!-- Leaflet CSS الخرائط -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <!-- Google Identity Services Library -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <style>
         :root {
-            --primary: #008751;
-            --primary-dark: #005c37;
-            --accent: #FFD100;
-            --dark: #121212;
-            --card-bg: #1e1e1e;
-            --text-main: #ffffff;
-            --text-sub: #b0b0b0;
-            --danger: #e53935;
-            --border: #333333;
+            --didi-orange: #FF6600;
+            --didi-dark: #1C1E21;
+            --didi-gray: #F5F5F7;
+            --text-dark: #222222;
+            --text-muted: #777777;
+            --card-radius: 16px;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            background-color: var(--dark);
-            color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+        body, html {
+            height: 100%;
+            width: 100%;
             overflow: hidden;
+            background-color: #fff;
         }
 
-        header {
-            background: rgba(18, 18, 18, 0.95);
-            border-bottom: 2px solid var(--primary);
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .logo {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .user-badge {
-            background: #2a2a2a;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .user-avatar {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .btn-logout {
-            background: transparent;
-            border: none;
-            color: var(--danger);
-            cursor: pointer;
-            margin-right: 8px;
-        }
-
-        /* Authentication Screen */
+        /* Auth Screen */
         .auth-container {
             position: fixed;
             inset: 0;
-            background: var(--dark);
-            z-index: 2000;
+            background: #111;
+            z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            overflow-y: auto;
         }
 
         .auth-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            background: #1e1e1e;
+            border-radius: var(--card-radius);
             width: 100%;
-            max-width: 420px;
-            padding: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            max-width: 400px;
+            padding: 24px;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .auth-card h2 {
             text-align: center;
-            color: var(--primary);
+            color: var(--didi-orange);
             margin-bottom: 20px;
         }
 
@@ -123,712 +71,470 @@
 
         .role-btn {
             flex: 1;
-            padding: 10px;
-            border: 1px solid var(--border);
-            background: #252525;
-            color: var(--text-sub);
-            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #333;
+            background: #2A2A2A;
+            color: #aaa;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
         }
 
         .role-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
+            background: var(--didi-orange);
+            color: #fff;
+            border-color: var(--didi-orange);
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-            color: var(--text-sub);
-        }
-
-        .form-group input {
+        .driver-fields input {
             width: 100%;
             padding: 10px;
+            margin-bottom: 10px;
             background: #2a2a2a;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-main);
-            outline: none;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 8px;
         }
 
-        .form-group input:focus {
-            border-color: var(--primary);
-        }
-
-        .driver-fields {
-            display: none;
-            border-top: 1px dashed var(--border);
-            padding-top: 15px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-
-        .google-btn-wrapper {
+        .btn-google {
+            width: 100%;
+            padding: 14px;
+            background: #fff;
+            color: #000;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
             display: flex;
+            align-items: center;
             justify-content: center;
-            margin-top: 15px;
+            gap: 10px;
         }
 
-        .instructions {
-            font-size: 0.8rem;
-            color: var(--text-sub);
-            text-align: center;
-            margin-bottom: 15px;
-            line-height: 1.4;
-        }
-
-        /* Main Dashboard Screen */
-        .dashboard {
-            display: flex;
-            flex: 1;
+        /* DiDi Style App UI */
+        .app-container {
             position: relative;
-            height: calc(100vh - 60px);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         #map {
-            flex: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
             z-index: 1;
         }
 
-        .panel {
-            width: 380px;
-            background: var(--card-bg);
-            border-right: 1px solid var(--border);
-            z-index: 10;
+        /* Top Bar Overlay */
+        .top-nav {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            z-index: 100;
             display: flex;
-            flex-direction: column;
-            padding: 20px;
-            overflow-y: auto;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
         }
 
-        @media (max-width: 768px) {
-            .dashboard { flex-direction: column-reverse; }
-            .panel { width: 100%; height: 50%; }
-            #map { height: 50%; }
-        }
-
-        .status-badge {
-            background: rgba(0, 135, 81, 0.2);
-            color: var(--primary);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            margin-bottom: 15px;
-            border: 1px solid var(--primary);
-            text-align: center;
-        }
-
-        .location-inputs {
-            background: #2a2a2a;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .loc-row {
+        .nav-btn {
+            pointer-events: auto;
+            width: 44px;
+            height: 44px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            cursor: pointer;
         }
 
-        .loc-row:last-child { margin-bottom: 0; }
-        .loc-row i { width: 20px; text-align: center; }
+        .user-pill {
+            pointer-events: auto;
+            background: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        .offers-list, .requests-list {
-            margin-top: 15px;
+        /* Bottom DiDi Sheet */
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.15);
+            z-index: 100;
+            padding: 20px 20px 30px 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sheet-handle {
+            width: 40px;
+            height: 5px;
+            background: #E0E0E0;
+            border-radius: 3px;
+            margin: 0 auto 15px auto;
+        }
+
+        /* Passenger Search Box */
+        .search-box-didi {
+            background: var(--didi-gray);
+            border-radius: 14px;
+            padding: 12px 16px;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .card-item {
-            background: #2a2a2a;
-            border: 1px solid var(--border);
-            padding: 12px;
-            border-radius: 8px;
+        .search-row {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
+            align-items: center;
+            gap: 12px;
         }
 
-        .card-item-header {
+        .dot-green { width: 10px; height: 10px; background: #00B87C; border-radius: 50%; }
+        .dot-orange { width: 10px; height: 10px; background: var(--didi-orange); border-radius: 50%; }
+
+        .search-row input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            font-size: 0.95rem;
+            font-weight: 500;
+            outline: none;
+            color: var(--text-dark);
+        }
+
+        .divider {
+            height: 1px;
+            background: #E5E5E5;
+            margin-right: 22px;
+        }
+
+        .btn-confirm-didi {
+            width: 100%;
+            padding: 14px;
+            background: var(--didi-orange);
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+        }
+
+        .btn-confirm-didi:disabled {
+            background: #ccc;
+            box-shadow: none;
+        }
+
+        /* Cards List for Offers / Requests */
+        .cards-container {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .didi-card {
+            border: 1px solid #EAEAEA;
+            border-radius: 12px;
+            padding: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: bold;
+            background: #fff;
         }
 
-        .price-tag {
-            color: var(--accent);
-            font-size: 1.1rem;
-        }
-
-        .input-inline {
+        .didi-card-info {
             display: flex;
-            gap: 8px;
-            margin-top: 5px;
+            flex-direction: column;
+            gap: 4px;
         }
 
-        .input-inline input {
-            flex: 1;
-            padding: 6px;
-            background: #1e1e1e;
-            border: 1px solid var(--border);
+        .didi-card-title { font-weight: bold; font-size: 0.95rem; }
+        .didi-card-sub { font-size: 0.8rem; color: var(--text-muted); }
+        .didi-card-price { font-size: 1.1rem; font-weight: 800; color: var(--didi-orange); }
+
+        .btn-sm-didi {
+            background: var(--didi-dark);
             color: #fff;
-            border-radius: 4px;
-        }
-
-        .btn-action {
-            background: var(--primary);
-            color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: bold;
+            cursor: pointer;
         }
 
-        .btn-action:hover { background: var(--primary-dark); }
         .hidden { display: none !important; }
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn-submit:hover { background: var(--primary-dark); }
-        .btn-submit:disabled { background: #444; color: #888; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <div class="logo">
-            <i class="fa-solid fa-taxi"></i> TR7AL ALsudan
-        </div>
-        <div id="userBadge" class="user-badge hidden">
-            <img id="userAvatarImg" src="" class="user-avatar" alt="Avatar">
-            <span id="userNameDisplay">مستخدم</span>
-            <button class="btn-logout" title="تسجيل خروج" onclick="logout()"><i class="fa-solid fa-power-off"></i></button>
-        </div>
-    </header>
-
-    <!-- Auth Modal -->
+    <!-- Auth Overlay -->
     <div id="authScreen" class="auth-container">
         <div class="auth-card">
             <h2>TR7AL ALsudan</h2>
+            <p style="text-align: center; color: #aaa; margin-bottom: 15px; font-size: 0.85rem;">اختر نوع الحساب للدخول</p>
+            
             <div class="role-selector">
-                <button type="button" class="role-btn active" onclick="setRole('passenger')">راكب</button>
-                <button type="button" class="role-btn" onclick="setRole('driver')">سائق كابتن</button>
+                <button class="role-btn active" onclick="setRole('passenger')">راكب</button>
+                <button class="role-btn" onclick="setRole('driver')">سائق (كابتن)</button>
             </div>
 
-            <!-- Driver Fields (Optional/Required before Google Login if Driver) -->
-            <div id="driverFields" class="driver-fields">
-                <div class="form-group">
-                    <label>نوع/اسم السيارة</label>
-                    <input type="text" id="carModel" placeholder="مثال: هيونداي كليك / توسان">
-                </div>
-                <div class="form-group">
-                    <label>لون السيارة</label>
-                    <input type="text" id="carColor" placeholder="مثال: أبيض / أسود">
-                </div>
-                <div class="form-group">
-                    <label>رقم اللوحة</label>
-                    <input type="text" id="plateNumber" placeholder="مثال: خ5 - 1234">
-                </div>
+            <div id="driverFields" class="driver-fields hidden">
+                <input type="text" id="carModel" placeholder="نوع السيارة (مثل: هيونداي كليك)">
+                <input type="text" id="carColor" placeholder="لون السيارة">
+                <input type="text" id="plateNumber" placeholder="رقم اللوحة">
             </div>
 
-            <div class="instructions" id="authInstruction">
-                اختر دورك (راكب أو سائق)، ثم اضغط على زر تسجيل الدخول بحساب جوجل المعتمد والموثوق:
-            </div>
-
-            <!-- Google Sign In Button Container -->
-            <div class="google-btn-wrapper">
-                <div id="g_id_onload"
-                     data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
-                     data-callback="handleGoogleSignIn"
-                     data-auto_prompt="false">
-                </div>
-                <div class="g_id_signin"
-                     data-type="standard"
-                     data-size="large"
-                     data-theme="outline"
-                     data-text="sign_in_with"
-                     data-shape="rectangular"
-                     data-logo_alignment="left">
-                </div>
-            </div>
-
-            <!-- Fallback Login button for local browser testing if Google API script needs a live Client ID -->
-            <button type="button" onclick="simulateGoogleLogin()" style="margin-top: 15px; background: #333; color: #fff; border: 1px solid #555; width: 100%; padding: 10px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
-                <i class="fa-brands fa-google"></i> محاكاة تسجيل الدخول السريع بجوجل (تجريبي)
+            <button class="btn-google" onclick="loginSimulation()">
+                <i class="fa-brands fa-google" style="color: #EA4335;"></i> الدخول الحسابي السريع
             </button>
         </div>
     </div>
 
-    <!-- Main Dashboard -->
-    <div id="mainDashboard" class="dashboard hidden">
-        <!-- Control Panel -->
-        <div class="panel">
-            <div id="roleBadge" class="status-badge">وضع الراكب - حدد مكانك ووجهتك</div>
+    <!-- Main DiDi App Layout -->
+    <div class="app-container">
+        <!-- Map Canvas -->
+        <div id="map"></div>
 
-            <!-- Passenger Panel UI -->
-            <div id="passengerControls">
-                <div class="location-inputs">
-                    <div class="loc-row">
-                        <i class="fa-solid fa-location-dot" style="color: #4CAF50;"></i>
-                        <span id="pickupText" style="font-size:0.85rem">انقر على الخريطة لتحديد موقع الانطلاق</span>
-                    </div>
-                    <div class="loc-row">
-                        <i class="fa-solid fa-flag-checkered" style="color: #f44336;"></i>
-                        <span id="dropoffText" style="font-size:0.85rem">انقر على الخريطة لتحديد موقع الوصول</span>
-                    </div>
-                </div>
-                <button class="btn-submit" id="requestTripBtn" onclick="sendTripRequest()" disabled>أطلب الرحلة الآن</button>
-                
-                <h3 style="margin-top: 20px; font-size: 1rem; color: var(--text-sub);">العروض المقدمة من السائقين:</h3>
-                <div id="offersContainer" class="offers-list">
-                    <div style="text-align: center; color: var(--text-sub); font-size:0.85rem;">لا توجد عروض حالياً</div>
-                </div>
-            </div>
-
-            <!-- Driver Panel UI -->
-            <div id="driverControls" class="hidden">
-                <h3 style="font-size: 1rem; color: var(--text-sub); margin-bottom: 10px;">طلبات الركاب المتاحة:</h3>
-                <div id="requestsContainer" class="requests-list">
-                    <div style="text-align: center; color: var(--text-sub); font-size:0.85rem;">لا توجد طلبات رحلات قريبة</div>
-                </div>
-            </div>
-
-            <!-- Active Trip Tracker UI -->
-            <div id="activeTripBox" class="hidden" style="margin-top: 15px; background: #252525; padding: 15px; border-radius: 8px; border: 1px solid var(--primary);">
-                <h4 style="color: var(--primary); margin-bottom: 8px;">الرحلة قائمة الآن 🚕</h4>
-                <p id="tripDetailsText" style="font-size: 0.85rem; line-height: 1.4;"></p>
-                <button onclick="finishTrip()" class="btn-submit" style="background: var(--danger); margin-top: 10px;">إنهاء الرحلة</button>
+        <!-- Top Navigation -->
+        <div class="top-nav">
+            <div class="nav-btn" onclick="logout()"><i class="fa-solid fa-power-off"></i></div>
+            <div class="user-pill" id="userPill">
+                <i class="fa-solid fa-user-circle" style="color: var(--didi-orange); font-size: 1.1rem;"></i>
+                <span id="userName">مستخدم</span>
             </div>
         </div>
 
-        <!-- Map Screen -->
-        <div id="map"></div>
+        <!-- Bottom Sheet Controls -->
+        <div class="bottom-sheet">
+            <div class="sheet-handle"></div>
+
+            <!-- Passenger View -->
+            <div id="passengerControls">
+                <div class="search-box-didi">
+                    <div class="search-row">
+                        <div class="dot-green"></div>
+                        <input type="text" id="pickupTxt" readonly value="اضغط على الخريطة لتحديد موقع الانطلاق">
+                    </div>
+                    <div class="divider"></div>
+                    <div class="search-row">
+                        <div class="dot-orange"></div>
+                        <input type="text" id="dropoffTxt" readonly value="اضغط على الخريطة لتحديد الوجهة">
+                    </div>
+                </div>
+
+                <button class="btn-confirm-didi" id="requestBtn" onclick="createTrip()" disabled>طلب رحلة ترحال</button>
+
+                <h4 style="margin-top: 20px; font-size: 0.9rem; color: var(--text-dark);">عروض الكباتن المتاحة:</h4>
+                <div id="offersList" class="cards-container">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 10px;">لا توجد عروض حالية</div>
+                </div>
+            </div>
+
+            <!-- Driver View -->
+            <div id="driverControls" class="hidden">
+                <h4 style="font-size: 0.95rem; margin-bottom: 10px;">طلبات الركاب القريبة:</h4>
+                <div id="requestsList" class="cards-container">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 10px;">لا توجد طلبات جارية</div>
+                </div>
+            </div>
+
+            <!-- Active Trip Tracker -->
+            <div id="activeTripBox" class="hidden">
+                <div style="text-align: center; padding: 10px 0;">
+                    <i class="fa-solid fa-car-side" style="font-size: 2.5rem; color: var(--didi-orange); margin-bottom: 10px;"></i>
+                    <h3 style="margin-bottom: 5px;">الرحلة قيد التنفيذ</h3>
+                    <p id="tripStatusText" style="font-size: 0.85rem; color: var(--text-muted);"></p>
+                    <button class="btn-confirm-didi" style="background: #E53935; margin-top: 15px;" onclick="finishTrip()">إنهاء الرحلة</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <script>
         let currentUser = null;
         let selectedRole = 'passenger';
         let map = null;
-        let pickupMarker = null;
-        let dropoffMarker = null;
-        let driverMarker = null;
-
         let pickupCoords = null;
         let dropoffCoords = null;
-        let activeTrip = null;
+        let pickupMarker = null;
+        let dropoffMarker = null;
 
-        const channel = new BroadcastChannel('tr7al_sudan_channel');
+        const channel = new BroadcastChannel('tr7al_didi_channel');
 
         function setRole(role) {
             selectedRole = role;
-            document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
             if (role === 'passenger') {
                 document.querySelectorAll('.role-btn')[0].classList.add('active');
-                document.getElementById('driverFields').style.display = 'none';
+                document.getElementById('driverFields').classList.add('hidden');
             } else {
                 document.querySelectorAll('.role-btn')[1].classList.add('active');
-                document.getElementById('driverFields').style.display = 'block';
+                document.getElementById('driverFields').classList.remove('hidden');
             }
         }
 
-        // فك تشفير Google JWT Token المأخوذ عند تسجيل الدخول الحقيقي بحساب جوجل
-        function parseJwt(token) {
-            try {
-                let base64Url = token.split('.')[1];
-                let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                let jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                }).join(''));
-                return JSON.parse(jsonPayload);
-            } catch (e) {
-                return null;
-            }
-        }
-
-        // دالة استقبال بيانات الـ Google Sign-In الحقيقي
-        function handleGoogleSignIn(response) {
-            const responsePayload = parseJwt(response.credential);
-            if (!responsePayload) {
-                alert("حدث خطأ أثناء المصادقة بحساب جوجل.");
-                return;
-            }
-
-            processUserData({
-                name: responsePayload.name,
-                email: responsePayload.email,
-                picture: responsePayload.picture
-            });
-        }
-
-        // محاكاة تسجيل دخول جوجل فوري للمتصفحات المحلية بدون إعداد Client ID معقد
-        function simulateGoogleLogin() {
-            if (selectedRole === 'driver') {
-                const carModel = document.getElementById('carModel').value.trim();
-                const carColor = document.getElementById('carColor').value.trim();
-                const plateNumber = document.getElementById('plateNumber').value.trim();
-
-                if (!carModel || !plateNumber) {
-                    alert("يرجى إدخال بيانات السيارة ورقم اللوحة أولاً بصفتك كابتن!");
-                    return;
-                }
-            }
-
-            // بيانات افتراضية حقيقية من حساب Google تجريبي
-            processUserData({
-                name: selectedRole === 'passenger' ? "مؤمن (عبر Google)" : "الكابتن (عبر Google)",
-                email: "momen.user@gmail.com",
-                picture: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-            });
-        }
-
-        function processUserData(googleData) {
+        function loginSimulation() {
             currentUser = {
-                id: 'usr_' + Date.now(),
-                fullName: googleData.name,
-                email: googleData.email,
-                avatar: googleData.picture,
-                role: selectedRole
+                id: 'u_' + Date.now(),
+                name: selectedRole === 'passenger' ? 'الراكب' : 'الكابتن',
+                role: selectedRole,
+                carModel: document.getElementById('carModel').value || 'سيارة عامة',
+                plateNumber: document.getElementById('plateNumber').value || 'خ - 0000'
             };
-
-            if (selectedRole === 'driver') {
-                currentUser.carModel = document.getElementById('carModel').value || 'هيونداي أفنان';
-                currentUser.carColor = document.getElementById('carColor').value || 'أبيض';
-                currentUser.plateNumber = document.getElementById('plateNumber').value || 'خرطوم - 7412';
-            }
-
-            localStorage.setItem('tr7al_user', JSON.stringify(currentUser));
+            localStorage.setItem('tr7al_didi_user', JSON.stringify(currentUser));
             initApp();
         }
 
         function logout() {
-            localStorage.removeItem('tr7al_user');
+            localStorage.removeItem('tr7al_didi_user');
             location.reload();
         }
 
         function initApp() {
-            const savedUser = localStorage.getItem('tr7al_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-            }
+            const saved = localStorage.getItem('tr7al_didi_user');
+            if (saved) currentUser = JSON.parse(saved);
 
             if (!currentUser) return;
 
             document.getElementById('authScreen').classList.add('hidden');
-            document.getElementById('mainDashboard').classList.remove('hidden');
-            document.getElementById('userBadge').classList.remove('hidden');
-            document.getElementById('userNameDisplay').textContent = `${currentUser.fullName} (${currentUser.role === 'passenger' ? 'راكب' : 'سائق'})`;
-            document.getElementById('userAvatarImg').src = currentUser.avatar || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+            document.getElementById('userName').textContent = `${currentUser.name} (${currentUser.role === 'passenger' ? 'راكب' : 'كابتن'})`;
 
             initMap();
-            setupRoleUI();
 
-            channel.onmessage = (event) => {
-                handleRealtimeEvents(event.data);
-            };
-
-            loadAppState();
-        }
-
-        function setupRoleUI() {
-            if (currentUser.role === 'passenger') {
-                document.getElementById('roleBadge').textContent = "وضع الراكب - حدد مكان الانطلاق والوصول";
-                document.getElementById('passengerControls').classList.remove('hidden');
-                document.getElementById('driverControls').classList.add('hidden');
-            } else {
-                document.getElementById('roleBadge').textContent = `وضع الكابتن - ${currentUser.carModel} (${currentUser.plateNumber})`;
+            if (currentUser.role === 'driver') {
                 document.getElementById('passengerControls').classList.add('hidden');
                 document.getElementById('driverControls').classList.remove('hidden');
+                renderRequests();
             }
+
+            channel.onmessage = (e) => {
+                if (currentUser.role === 'driver') renderRequests();
+                if (currentUser.role === 'passenger') renderOffers();
+            };
         }
 
         function initMap() {
             if (map) return;
-            // موقع افتراضي: الخرطوم، السودان
-            const khartoumCoords = [15.5007, 32.5599];
-            map = L.map('map').setView(khartoumCoords, 13);
+            map = L.map('map', { zoomControl: false }).setView([15.5007, 32.5599], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap TR7AL ALsudan'
-            }).addTo(map);
-
-            map.on('click', function(e) {
-                if (currentUser.role !== 'passenger' || activeTrip) return;
+            map.on('click', (e) => {
+                if (currentUser.role !== 'passenger') return;
 
                 if (!pickupCoords) {
                     pickupCoords = e.latlng;
-                    if (pickupMarker) map.removeLayer(pickupMarker);
-                    pickupMarker = L.marker(pickupCoords).addTo(map).bindPopup('موقع الانطلاق').openPopup();
-                    document.getElementById('pickupText').textContent = `تم تحديد الانطلاق: ${pickupCoords.lat.toFixed(3)}, ${pickupCoords.lng.toFixed(3)}`;
+                    pickupMarker = L.marker(pickupCoords).addTo(map);
+                    document.getElementById('pickupTxt').value = `موقع الانطلاق: ${pickupCoords.lat.toFixed(3)}, ${pickupCoords.lng.toFixed(3)}`;
                 } else if (!dropoffCoords) {
                     dropoffCoords = e.latlng;
-                    if (dropoffMarker) map.removeLayer(dropoffMarker);
-                    dropoffMarker = L.marker(dropoffCoords).addTo(map).bindPopup('موقع الوصول').openPopup();
-                    document.getElementById('dropoffText').textContent = `تم تحديد الوصول: ${dropoffCoords.lat.toFixed(3)}, ${dropoffCoords.lng.toFixed(3)}`;
-                    document.getElementById('requestTripBtn').disabled = false;
-                } else {
-                    pickupCoords = e.latlng;
-                    dropoffCoords = null;
-                    if (pickupMarker) map.removeLayer(pickupMarker);
-                    if (dropoffMarker) map.removeLayer(dropoffMarker);
-                    pickupMarker = L.marker(pickupCoords).addTo(map).bindPopup('موقع الانطلاق').openPopup();
-                    document.getElementById('pickupText').textContent = `تم تحديد الانطلاق: ${pickupCoords.lat.toFixed(3)}, ${pickupCoords.lng.toFixed(3)}`;
-                    document.getElementById('dropoffText').textContent = 'انقر على الخريطة لتحديد موقع الوصول';
-                    document.getElementById('requestTripBtn').disabled = true;
+                    dropoffMarker = L.marker(dropoffCoords).addTo(map);
+                    document.getElementById('dropoffTxt').value = `الوجهة: ${dropoffCoords.lat.toFixed(3)}, ${dropoffCoords.lng.toFixed(3)}`;
+                    document.getElementById('requestBtn').disabled = false;
                 }
             });
         }
 
-        function sendTripRequest() {
-            if (!pickupCoords || !dropoffCoords) return;
-
-            const tripRequest = {
-                type: 'NEW_TRIP_REQUEST',
-                tripId: 'trip_' + Date.now(),
-                passengerName: currentUser.fullName,
-                passengerEmail: currentUser.email,
+        function createTrip() {
+            const trip = {
+                id: 't_' + Date.now(),
+                passenger: currentUser.name,
                 pickup: pickupCoords,
                 dropoff: dropoffCoords,
                 offers: []
             };
-
             let trips = JSON.parse(localStorage.getItem('tr7al_trips') || '[]');
-            trips.push(tripRequest);
+            trips.push(trip);
             localStorage.setItem('tr7al_trips', JSON.stringify(trips));
-
-            channel.postMessage(tripRequest);
-
-            document.getElementById('requestTripBtn').disabled = true;
-            document.getElementById('requestTripBtn').textContent = "جاري البحث عن كباتن قريبين...";
-            alert("تم إرسال طلب الرحلة بنجاح! انتظر عروض أسعار السائقين.");
+            channel.postMessage({ type: 'NEW_TRIP' });
+            alert("تم إرسال طلبك بنجاح!");
         }
 
-        function handleRealtimeEvents(data) {
-            if (data.type === 'NEW_TRIP_REQUEST' && currentUser.role === 'driver') {
-                renderDriverRequests();
-            } else if (data.type === 'NEW_PRICE_OFFER' && currentUser.role === 'passenger') {
-                renderPassengerOffers();
-            } else if (data.type === 'OFFER_ACCEPTED') {
-                if (currentUser.role === 'driver' && data.driverEmail === currentUser.email) {
-                    alert(`تهانينا! الراكب قبل عرضك بمبلغ ${data.price} جنيه.`);
-                    startDriverTrip(data);
-                }
-            }
-        }
-
-        function renderDriverRequests() {
-            if (currentUser.role !== 'driver') return;
-            const trips = JSON.parse(localStorage.getItem('tr7al_trips') || '[]');
-            const container = document.getElementById('requestsContainer');
-            container.innerHTML = '';
-
-            if (trips.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: var(--text-sub); font-size:0.85rem;">لا توجد طلبات رحلات حالياً</div>';
-                return;
-            }
-
-            trips.forEach(trip => {
-                const card = document.createElement('div');
-                card.className = 'card-item';
-                card.innerHTML = `
-                    <div class="card-item-header">
-                        <span>الراكب: ${trip.passengerName}</span>
-                    </div>
-                    <div style="font-size:0.8rem; color: var(--text-sub);">
-                        من: موقع على الخريطة<br>
-                        إلى: وجهة محددة
-                    </div>
-                    <div class="input-inline">
-                        <input type="number" id="price_${trip.tripId}" placeholder="السعر بالجنيه">
-                        <button class="btn-action" onclick="submitOffer('${trip.tripId}')">تقديم عرض</button>
+        function renderRequests() {
+            let trips = JSON.parse(localStorage.getItem('tr7al_trips') || '[]');
+            const list = document.getElementById('requestsList');
+            list.innerHTML = '';
+            trips.forEach(t => {
+                list.innerHTML += `
+                    <div class="didi-card">
+                        <div class="didi-card-info">
+                            <span class="didi-card-title">${t.passenger}</span>
+                            <span class="didi-card-sub">طلب رحلة جديدة</span>
+                        </div>
+                        <button class="btn-sm-didi" onclick="makeOffer('${t.id}')">تقديم سعر</button>
                     </div>
                 `;
-                container.appendChild(card);
             });
         }
 
-        function submitOffer(tripId) {
-            const priceInput = document.getElementById(`price_${tripId}`);
-            const price = priceInput.value;
-            if (!price || price <= 0) {
-                alert("يرجى إدخال سعر مناسب بالجنيه!");
-                return;
-            }
-
+        function makeOffer(tripId) {
+            const price = prompt("أدخل قيمة العرض بالجنيه:");
+            if (!price) return;
             let trips = JSON.parse(localStorage.getItem('tr7al_trips') || '[]');
-            const tripIndex = trips.findIndex(t => t.tripId === tripId);
-
-            if (tripIndex !== -1) {
-                const offer = {
-                    driverName: currentUser.fullName,
-                    driverEmail: currentUser.email,
-                    carModel: currentUser.carModel,
-                    carColor: currentUser.carColor,
-                    plateNumber: currentUser.plateNumber,
-                    price: price
-                };
-                
-                trips[tripIndex].offers.push(offer);
+            let t = trips.find(x => x.id === tripId);
+            if (t) {
+                t.offers.push({ driver: currentUser.name, car: currentUser.carModel, price });
                 localStorage.setItem('tr7al_trips', JSON.stringify(trips));
-
-                channel.postMessage({
-                    type: 'NEW_PRICE_OFFER',
-                    tripId: tripId,
-                    offer: offer
-                });
-
-                alert("تم إرسال عرض السعر للراكب بنجاح!");
-                priceInput.value = '';
+                channel.postMessage({ type: 'NEW_OFFER' });
+                alert("تم إرسال عرض السعر للراكب!");
             }
         }
 
-        function renderPassengerOffers() {
-            if (currentUser.role !== 'passenger') return;
-            const trips = JSON.parse(localStorage.getItem('tr7al_trips') || '[]');
-            const container = document.getElementById('offersContainer');
-            container.innerHTML = '';
-
-            const myTrip = trips.find(t => t.passengerEmail === currentUser.email);
-
-            if (!myTrip || myTrip.offers.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: var(--text-sub); font-size:0.85rem;">في انتظار عروض الأسعار من الكباتن...</div>';
-                return;
-            }
-
-            myTrip.offers.forEach(offer => {
-                const card = document.createElement('div');
-                card.className = 'card-item';
-                card.innerHTML = `
-                    <div class="card-item-header">
-                        <span>${offer.driverName}</span>
-                        <span class="price-tag">${offer.price} SDG</span>
-                    </div>
-                    <div style="font-size:0.8rem; color: var(--text-sub);">
-                        العربية: ${offer.carModel} (${offer.carColor})<br>
-                        اللوحة: ${offer.plateNumber}
-                    </div>
-                    <button class="btn-action" style="margin-top: 5px;" onclick="acceptOffer('${myTrip.tripId}', '${offer.driverEmail}', '${offer.price}')">قبول هذا العرض</button>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function acceptOffer(tripId, driverEmail, price) {
+        function renderOffers() {
             let trips = JSON.parse(localStorage.getItem('tr7al_trips') || '[]');
-            const myTrip = trips.find(t => t.tripId === tripId);
-            const selectedOffer = myTrip.offers.find(o => o.driverEmail === driverEmail);
-
-            activeTrip = {
-                ...myTrip,
-                acceptedDriver: selectedOffer,
-                price: price
-            };
-
-            localStorage.setItem('tr7al_active_trip', JSON.stringify(activeTrip));
-            
-            channel.postMessage({
-                type: 'OFFER_ACCEPTED',
-                tripId: tripId,
-                driverEmail: driverEmail,
-                price: price
-            });
-
-            startPassengerTrip();
+            const list = document.getElementById('offersList');
+            list.innerHTML = '';
+            if (trips.length > 0 && trips[0].offers.length > 0) {
+                trips[0].offers.forEach(o => {
+                    list.innerHTML += `
+                        <div class="didi-card">
+                            <div class="didi-card-info">
+                                <span class="didi-card-title">${o.driver} (${o.car})</span>
+                                <span class="didi-card-price">${o.price} SDG</span>
+                            </div>
+                            <button class="btn-sm-didi" style="background: var(--didi-orange)" onclick="acceptTrip('${o.driver}', '${o.price}')">قبول</button>
+                        </div>
+                    `;
+                });
+            }
         }
 
-        function startPassengerTrip() {
+        function acceptTrip(driver, price) {
             document.getElementById('passengerControls').classList.add('hidden');
             document.getElementById('activeTripBox').classList.remove('hidden');
-            
-            const driver = activeTrip.acceptedDriver;
-            document.getElementById('tripDetailsText').innerHTML = `
-                <b>السائق:</b> ${driver.driverName}<br>
-                <b>السيارة:</b> ${driver.carModel} - ${driver.carColor}<br>
-                <b>رقم اللوحة:</b> ${driver.plateNumber}<br>
-                <b>السعر المتفق عليه:</b> <span style="color:var(--accent);">${activeTrip.price} SDG</span>
-            `;
-
-            if (activeTrip.pickup) {
-                let currentLat = activeTrip.pickup.lat - 0.005;
-                let currentLng = activeTrip.pickup.lng - 0.005;
-                
-                driverMarker = L.marker([currentLat, currentLng], {
-                    icon: L.icon({
-                        iconUrl: 'https://cdn-icons-png.flaticon.com/512/3448/3448339.png',
-                        iconSize: [35, 35]
-                    })
-                }).addTo(map).bindPopup('الكابتن في الطريق إليك').openPopup();
-
-                const interval = setInterval(() => {
-                    currentLat += 0.0005;
-                    currentLng += 0.0005;
-                    driverMarker.setLatLng([currentLat, currentLng]);
-
-                    if (Math.abs(currentLat - activeTrip.pickup.lat) < 0.0005) {
-                        clearInterval(interval);
-                        driverMarker.bindPopup('وصل الكابتن إلى موقعك!').openPopup();
-                    }
-                }, 2000);
-            }
-        }
-
-        function startDriverTrip(data) {
-            document.getElementById('driverControls').classList.add('hidden');
-            document.getElementById('activeTripBox').classList.remove('hidden');
-            document.getElementById('tripDetailsText').innerHTML = `
-                توجّه الآن إلى موقع الراكب.<br>
-                <b>قيمة الرحلة:</b> <span style="color:var(--accent);">${data.price} SDG</span>
-            `;
+            document.getElementById('tripStatusText').textContent = `الكابتن ${driver} في الطريق إليك (القيمة: ${price} SDG)`;
         }
 
         function finishTrip() {
-            activeTrip = null;
-            localStorage.removeItem('tr7al_active_trip');
             localStorage.removeItem('tr7al_trips');
-            alert("تم إنهاء الرحلة بنجاح. شكراً لاستخدامك ترحال السودان!");
             location.reload();
-        }
-
-        function loadAppState() {
-            const active = localStorage.getItem('tr7al_active_trip');
-            if (active) {
-                activeTrip = JSON.parse(active);
-                if (currentUser.role === 'passenger') {
-                    startPassengerTrip();
-                } else if (currentUser.role === 'driver' && activeTrip.acceptedDriver.driverEmail === currentUser.email) {
-                    startDriverTrip({ price: activeTrip.price });
-                }
-            } else {
-                if (currentUser.role === 'driver') renderDriverRequests();
-                if (currentUser.role === 'passenger') renderPassengerOffers();
-            }
         }
 
         window.onload = initApp;
